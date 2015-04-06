@@ -56,17 +56,16 @@ public class Conector {
         }
     }
 
-    public static void main(String[] args) {
-        Conector conector = new Conector();
-        conector.conectar();
+    public void consultarCantidadCursosPorMateriaPorAnio(int anio) {
+        conectar();
         ResultSet resultado1, resultado2 = null;
-        resultado1 = conector.ejecutarProcedimiento("consultar_materias_sistemas()");
+        resultado1 = ejecutarProcedimiento("consultar_materias_sistemas();");
         try {
             while (resultado1.next()) {
                 //System.out.println(resultado.getInt(1));
-                resultado2 = conector.ejecutarProcedimiento("consultar_cantidad_citas_por_materia_anio(" + resultado1.getInt(1) + ",2015)");
+                resultado2 = ejecutarProcedimiento("consultar_cantidad_cursos_por_materia_anio(" + resultado1.getInt(1) + "," + anio + ");");
                 resultado2.first();
-                System.out.println(resultado2.getInt(1));
+                System.out.println("La materia con id: " + resultado1.getInt(1) + ", posee " + resultado2.getInt(1) + " cursos");
             }
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
@@ -81,7 +80,7 @@ public class Conector {
             } catch (SQLException ex) {
                 Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
             }
-            conector.cerrar();
+            cerrar();
         }
     }
 }
