@@ -19,20 +19,6 @@ BEGIN
 CALL consultar_categorias_por_categoria_padre(568);
 END //
 
-/*
-DELIMITER //
-CREATE PROCEDURE consultar_cursos_por_materias_por_anio(
-    IN anio YEAR
-)
-CALL consultar_materias_sistemas()
-DECLARE creditlim double;
-
-SELECT creditlimit INTO creditlim
-FROM customers
-WHERE customerNumber = p_customerNumber;
-BEGIN
-END //
-*/
 
 DROP PROCEDURE IF EXISTS consultar_cantidad_cursos_por_materia_anio_mes_inicio_mes_fin;
 DELIMITER //
@@ -156,5 +142,27 @@ SELECT COUNT(*) AS cantidad_citas FROM (
     eav.ATTRIBUTE_VALUE = id_nombre_materia 
     /* filtro sin importar la cantidad de dias a la semana que viene */
     GROUP BY a.event_id
+) AS x;
+END //
+
+
+DROP PROCEDURE IF EXISTS consultar_cantidad_cursos_por_aula_anio;
+DELIMITER //
+CREATE PROCEDURE consultar_cantidad_cursos_por_aula_anio(
+    IN nombre_aula CHAR(2),
+    IN anio YEAR
+)
+BEGIN
+SELECT count(*) FROM (
+    SELECT count(*)
+    FROM rapla.appointment AS ap
+    INNER JOIN allocation AS al ON ap.id = al.APPOINTMENT_ID 
+    INNER JOIN rapla_resource rr ON rr.id = al.RESOURCE_ID 
+    INNER JOIN resource_attribute_value AS rav ON rav.RESOURCE_ID = rr.id 
+    WHERE 
+    rav.ATTRIBUTE_KEY = "name" AND 
+    rav.ATTRIBUTE_VALUE = nombre_aula AND 
+    YEAR(ap.APPOINTMENT_START) = anio 
+    GROUP BY event_id
 ) AS x;
 END //
