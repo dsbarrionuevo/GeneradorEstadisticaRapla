@@ -3,6 +3,7 @@ package ger;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.*;
 
 /**
  *
@@ -75,6 +76,38 @@ public class Conector {
                     resultado1.close();
                 }
                 if (resultado2 != null) {
+                    resultado1.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cerrar();
+        }
+    }
+
+    public void consultarHorasPorDia(String fechaDesde, String fechaHasta) {
+        ResultSet resultado1 = null;
+        try {
+            conectar();
+            Matcher matcher = (Pattern.compile("(\\d{4}-\\d{1,2})-(\\d{1,2})")).matcher(fechaDesde);
+            matcher.find();
+            String restoFecha = matcher.group(1);
+            int diaInicial = Integer.parseInt(matcher.group(2));
+            Matcher matcher2 = (Pattern.compile("(\\d{4}-\\d{1,2})-(\\d{1,2})")).matcher(fechaHasta);
+            matcher2.find();
+            int diaFinal = Integer.parseInt(matcher2.group(2));
+            while (diaInicial <= diaFinal) {
+                resultado1 = ejecutarProcedimiento("consultar_total_horas_por_fecha_hora_inicio_fin('" + restoFecha + "-" + diaInicial + "', '08:00:00','23:00:00');");
+                resultado1.first();
+                System.out.println(resultado1.getInt(1));
+                diaInicial++;
+            }
+            //
+        } catch (SQLException ex) {
+            Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (resultado1 != null) {
                     resultado1.close();
                 }
             } catch (SQLException ex) {
