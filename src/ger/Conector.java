@@ -1,6 +1,7 @@
 package ger;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.*;
@@ -101,6 +102,41 @@ public class Conector {
                 resultado1.first();
                 System.out.println(resultado1.getInt(1));
                 diaInicial++;
+            }
+            //
+        } catch (SQLException ex) {
+            Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (resultado1 != null) {
+                    resultado1.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cerrar();
+        }
+    }
+    
+        public void consultarHorarioMasUsadoPorDia(String fecha, int rango) 
+        {
+        ResultSet resultado1 = null;
+        ArrayList listaCursosEnRango = new ArrayList();
+        int horaInicio = 10;
+        int i = 0;
+        try 
+        {
+            conectar();
+            
+            while (horaInicio <= 20) 
+            {
+                resultado1 = ejecutarProcedimiento("consultar_cantidad_cursos_rango_horario_fecha('" + fecha + "', '" + horaInicio +":00:00','" + (horaInicio + 2) +":00:00');");
+                resultado1.first();
+                listaCursosEnRango.add(resultado1.getInt(1));
+                
+                System.out.println(listaCursosEnRango.get(i).toString());
+                i++;
+                horaInicio += 2;
             }
             //
         } catch (SQLException ex) {

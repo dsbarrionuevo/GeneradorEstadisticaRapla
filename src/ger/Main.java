@@ -1,5 +1,6 @@
 package ger;
 
+
 /**
  *
  * @author Barrionuevo Diego
@@ -11,7 +12,9 @@ public class Main {
     public static void main(String[] args) {
         conector = new Conector();
         //conector.consultarCantidadCursosPorMateriaPorAnio(2015);
-        conector.consultarHorasPorDia("2015-4-6","2015-4-10");
+        //conector.consultarHorasPorDia("2015-4-6","2015-4-10");
+
+        conector.consultarHorarioMasUsadoPorDia("2015-4-6", 2); // Hay un problema con esta cosa. Despues te explico
     }
 
 }
