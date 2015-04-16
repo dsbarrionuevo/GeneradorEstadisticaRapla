@@ -103,7 +103,6 @@ public class Conector {
                 System.out.println(resultado1.getInt(1));
                 diaInicial++;
             }
-            //
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
@@ -117,28 +116,55 @@ public class Conector {
             cerrar();
         }
     }
-    
-        public void consultarHorarioMasUsadoPorDia(String fecha, int rango) 
-        {
+
+    public void consultarHorarioMasUsadoPorDia(String fecha, int rango) {
         ResultSet resultado1 = null;
         ArrayList listaCursosEnRango = new ArrayList();
-        int horaInicio = 10;
+        int horaInicio = 8;
         int i = 0;
-        try 
-        {
+        try {
             conectar();
-            
-            while (horaInicio <= 20) 
-            {
-                resultado1 = ejecutarProcedimiento("consultar_cantidad_cursos_rango_horario_fecha('" + fecha + "', '" + horaInicio +":00:00','" + (horaInicio + 2) +":00:00');");
+            while (horaInicio < 24) {
+                int horaFin = horaInicio + rango;
+                String horaInicioString, horaFinString;
+                horaInicioString = ((String.valueOf(horaInicio).length() == 1) ? ("0" + horaInicio) : horaInicio + "") + ":00:00";
+                horaFinString = ((String.valueOf(horaFin).length() == 1) ? ("0" + horaFin) : horaFin + "") + ":00:00";
+                //resultado1 = ejecutarProcedimiento("consultar_cantidad_cursos_por_rango_horario_fecha('" + fecha + "', '" + horaInicioString + "','" + horaFinString + "');");
+
+                sentencia = conexion.createStatement();
+                String consulta = "SELECT count(*) \n"
+                        + "FROM rapla.appointment AS a \n"
+                        + "INNER JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id \n"
+                        + "JOIN allocation al ON al.APPOINTMENT_ID = a.ID\n"
+                        + "JOIN rapla.category c ON c.ID = eav.ATTRIBUTE_VALUE\n"
+                        + "JOIN rapla.resource_attribute_value rav ON rav.RESOURCE_ID = al.RESOURCE_ID\n"
+                        + "WHERE rav.ATTRIBUTE_KEY = \"name\" \n"
+                        + "AND eav.ATTRIBUTE_KEY = \"especialidad\" \n"
+                        + "AND '" + fecha + "' BETWEEN a.APPOINTMENT_START AND a.REPETITION_END \n"
+                        + "AND (\n"
+                        + "\n"
+                        + "( DATE_FORMAT(a.APPOINTMENT_START,'%T')>='" + horaInicioString + "' AND DATE_FORMAT(a.APPOINTMENT_START,'%T')<'" + horaFinString + "' )\n"
+                        + "OR\n"
+                        + "( DATE_FORMAT(a.APPOINTMENT_END,'%T')>'" + horaInicioString + "' AND DATE_FORMAT(a.APPOINTMENT_END,'%T')<='" + horaFinString + "' )\n"
+                        + "OR\n"
+                        + "( DATE_FORMAT(a.APPOINTMENT_START,'%T')<'" + horaInicioString + "' AND DATE_FORMAT(a.APPOINTMENT_END,'%T')>'" + horaFinString + "' )\n"
+                        + "\n"
+                        + ")"
+                        + ""
+                        + "AND DAYNAME(a.APPOINTMENT_START) = DAYNAME('" + fecha + "')\n"
+                        + "AND a.ID NOT IN(\n"
+                        + "	SELECT ae.APPOINTMENT_ID \n"
+                        + "	FROM appointment_exception ae \n"
+                        + "	WHERE DATE(ae.EXCEPTION_DATE) = '" + fecha + "'\n"
+                        + ")";
+                resultado1 = sentencia.executeQuery(consulta);
+
                 resultado1.first();
                 listaCursosEnRango.add(resultado1.getInt(1));
-                
-                System.out.println(listaCursosEnRango.get(i).toString());
+                System.out.println("Cantidad de cursos para la fecha " + fecha + " desde las " + horaInicioString + " y las " + horaFinString + ": " + resultado1.getInt(1));
                 i++;
-                horaInicio += 2;
+                horaInicio += rango;
             }
-            //
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

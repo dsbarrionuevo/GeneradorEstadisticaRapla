@@ -28,9 +28,9 @@ SELECT SEC_TO_TIME(SUM(TIME_TO_SEC(total_horas_por_dia))) AS horas_lunes FROM (
 ) AS x;
 END //
 
-DROP PROCEDURE IF EXISTS consultar_cantidad_cursos_rango_horario_fecha;
+DROP PROCEDURE IF EXISTS consultar_cantidad_cursos_por_rango_horario_fecha;
 DELIMITER //
-CREATE PROCEDURE consultar_cantidad_cursos_rango_horario_fecha(
+CREATE PROCEDURE consultar_cantidad_cursos_por_rango_horario_fecha(
     IN fecha DATE,
     IN hora_inicio TIME,
     IN hora_fin TIME
@@ -44,16 +44,15 @@ BEGIN
     JOIN rapla.resource_attribute_value rav ON rav.RESOURCE_ID = al.RESOURCE_ID
     WHERE rav.ATTRIBUTE_KEY = "name" 
     AND eav.ATTRIBUTE_KEY = "especialidad" 
-    AND fecha BETWEEN a.APPOINTMENT_START AND a.REPETITION_END
-    AND (DATE_FORMAT(a.APPOINTMENT_START,'%T') > hora_inicio AND DATE_FORMAT(a.APPOINTMENT_START,'%T') < hora_fin
-	OR DATE_FORMAT(a.APPOINTMENT_END,'%T') > hora_inicio AND DATE_FORMAT(a.APPOINTMENT_END,'%T') < hora_fin)
+    AND fecha BETWEEN a.APPOINTMENT_START AND a.REPETITION_END 
+    AND ((DATE_FORMAT(a.APPOINTMENT_START,'%T') BETWEEN hora_inicio AND SUBTIME(hora_fin,'00:01:00')) OR (DATE_FORMAT(a.APPOINTMENT_END,'%T') < SUBTIME(hora_fin,'00:01:00')))
     AND DAYNAME(a.APPOINTMENT_START) = DAYNAME(fecha)
     AND a.ID NOT IN(
         SELECT ae.APPOINTMENT_ID 
         FROM appointment_exception ae 
         WHERE DATE(ae.EXCEPTION_DATE) = fecha
     );
-END
+END //
 
 /*
 DROP PROCEDURE IF EXISTS consultar_total_horas_entre_fecha_inicio_fin;
