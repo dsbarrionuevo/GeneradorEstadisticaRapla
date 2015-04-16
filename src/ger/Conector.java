@@ -132,6 +132,13 @@ public class Conector {
                 //resultado1 = ejecutarProcedimiento("consultar_cantidad_cursos_por_rango_horario_fecha('" + fecha + "', '" + horaInicioString + "','" + horaFinString + "');");
 
                 sentencia = conexion.createStatement();
+                /*esta consulta busca todos los cursos (o materias) que estan dentro del rango de horas:
+                esto puede ser: que justo termine en ese rango, comienzo en ese rango, comience y termine en ese rango,
+                o que haya comenzado antes del inicio del rango y termine desp del final del rango.
+                Graficamente son la cantidad de cuadraditos que muestra el rapla para tal dia en el horario indicado por el rango.
+                Esta hardcodeada en el codigo por el hhecho de que al llamarla como procedimiento tira error con el ecndoe por el hecho
+                de comprar fechas con date_format.
+                */
                 String consulta = "SELECT count(*) \n"
                         + "FROM rapla.appointment AS a \n"
                         + "INNER JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id \n"
