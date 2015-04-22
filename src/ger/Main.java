@@ -1,5 +1,7 @@
 package ger;
 
+import java.sql.Date;
+
 
 /**
  *
@@ -12,9 +14,9 @@ public class Main {
     public static void main(String[] args) {
         conector = new Conector();
         //conector.consultarCantidadCursosPorMateriaPorAnio(2015);
-        //conector.consultarHorasPorDia("2015-4-6","2015-4-10");
-
-        conector.consultarHorarioMasUsadoPorDia("2015-4-16", 2);
+        conector.consultarHorasPorDia("2015-4-1","2015-5-30", Date.valueOf("2015-4-1"), Date.valueOf("2015-5-30"));
+        //conector.consultarHorarioMasUsadoPorDia("2015-4-16", 2);
+        //conector.consultarSoftwareCursosAnual(2015, "software1");
     }
 
 }

@@ -36,3 +36,9 @@ dando un total de 17 cursos (11 + (3x2)).
 	- (consultar_cantidad_cursos_por_materia_anio_mes_inicio_mes_fin)
 Devuelve la cantidad de cursos (1k1, 1k2, 1k3...) por materia para un año. Similiar a la explicacion de arriba, pero sin sumar a la consulta, aquellos cursos
 que viene mas de una vez por semana. Por ej: para AED serian 14 cursos.
+
+	- (consultar_software_aulas)
+Devuelve los software que estan instalados en cada una de las aulas. Si el aula no tiene software, este no se muestra.
+
+	- consultarSoftwareCursosAnual
+Devuelve la lista de software de cada uno de los cursos.
