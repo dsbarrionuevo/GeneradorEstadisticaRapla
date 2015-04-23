@@ -352,33 +352,31 @@ public class Conector {
     {
         conectar();
         ResultSet resultado1, resultado2 = null;
-        ArrayList<Materia> listaSoftwareMaterias = new ArrayList<Materia>();
         resultado1 = ejecutarProcedimiento("consultar_materias_sistemas();");
         try 
         {
             while (resultado1.next()) 
             {
-                Materia materia = new Materia();                   
+                Materia materia = new Materia();
+                ArrayList<Curso> cursos = materia.getCurso();
                 materia.setIdMateria(resultado1.getInt(1));
                 materia.setNombreMateria(resultado1.getString(4));
                 resultado2 = ejecutarProcedimiento("consultar_cantidad_alumnos_curso_y_aula_anual(" + materia.getIdMateria() + "," + anio + ");");
                 while(resultado2.next())
                 {
-                    materia.getCurso().setCantidadAlumnos(resultado2.getInt(8));
-                    materia.getCurso().setNombreCurso(resultado2.getString(6));
+                    Curso curso = new Curso();
+                    curso.setNombreCurso(resultado2.getString(6));
+                    curso.setCantidadAlumnos(resultado2.getInt(8));
+                    cursos.add(curso);
                 }
                 
-                listaSoftwareMaterias.add(materia);
-            }
-            
-            for (Materia materia : listaSoftwareMaterias) 
-            {
-                if (materia.getSoftware().size() != 0) 
-                {
-                    System.out.println("La materia: " + materia.getNombreMateria() + ", posee el siguiente SW: " + materia.getSoftware().toString());
+                for (Curso curso : cursos) {
+                     System.out.println("La materia: " + materia.getNombreMateria() + " con el curso: " + curso.getNombreCurso()+ " tiene " + curso.getCantidadAlumnos() + " de alumnos");
                 }
                 
-            }
+                
+            }    
+
         } catch (SQLException ex) 
         {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);

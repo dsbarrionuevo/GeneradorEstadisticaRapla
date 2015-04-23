@@ -19,12 +19,12 @@ public class Materia
     private ArrayList<String> software;
     private String nombreMateria;
     private int cantidadCursos;
-    private Curso curso;
+    private ArrayList<Curso> curso;
 
     public Materia()
     {
         this.software = new ArrayList<String>();
-        this.curso = new Curso();
+        this.curso = new ArrayList<Curso>();
     }
     
     /**
@@ -87,15 +87,15 @@ public class Materia
     /**
      * @return the curso
      */
-    public Curso getCurso() {
+    public ArrayList<Curso> getCurso() {
         return curso;
     }
 
     /**
      * @param curso the curso to set
      */
-    public void setCurso(Curso curso) {
+    public void setCurso(ArrayList<Curso> curso) {
         this.curso = curso;
     }
-    
+   
 }
