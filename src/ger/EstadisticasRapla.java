@@ -53,7 +53,12 @@ public class EstadisticasRapla implements IEstadisticas {
 
     @Override
     public ArrayList<Software> obtenerSoftwarePorAula() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Software> software = new ArrayList<Software>();
+        ArrayList<Aula> aulas = obtenerAulas();
+        for (int i = 0; i < aulas.size(); i++) {
+            software.add(aulas.get(i).getSoftware());
+        }
+        return software;
     }
 
     @Override
