@@ -103,7 +103,6 @@ public class Conector {
             cerrar();
         }
     }
-
    
     public void consultarHorasPorDia(String fechaDesde, String fechaHasta, java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate)
     {
@@ -369,14 +368,10 @@ public class Conector {
                     curso.setCantidadAlumnos(resultado2.getInt(8));
                     cursos.add(curso);
                 }
-                
                 for (Curso curso : cursos) {
                      System.out.println("La materia: " + materia.getNombreMateria() + " con el curso: " + curso.getNombreCurso()+ " tiene " + curso.getCantidadAlumnos() + " de alumnos");
                 }
-                
-                
-            }    
-
+            } 
         } catch (SQLException ex) 
         {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
