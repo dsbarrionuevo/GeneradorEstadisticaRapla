@@ -30,7 +30,7 @@ SELECT COUNT(*) AS cantidad_citas FROM (
     MONTH(a.appointment_start) >= mes_inicio AND MONTH(a.repetition_end) <= mes_fin AND 
     /* filtros en la tabla de atributos de evento */
     /* filtro por materia*/
-    eav.ATTRIBUTE_KEY = "title" AND 
+    eav.ATTRIBUTE_KEY = "especialidad" AND 
     eav.ATTRIBUTE_VALUE = id_nombre_materia 
     /* filtro sin importar la cantidad de dias a la semana que viene */
     GROUP BY a.event_id
@@ -146,3 +146,74 @@ SELECT count(*) FROM (
     GROUP BY event_id
 ) AS x;
 END //
+
+DROP PROCEDURE IF EXISTS consultar_cantidad_citas_por_materia_anio_mes_inicio_mes_fin;
+DELIMITER //
+CREATE PROCEDURE consultar_cantidad_citas_por_materia_anio_mes_inicio_mes_fin(
+    IN id_nombre_materia INT(11),
+    IN anio YEAR,
+    IN mes_inicio INT(11),
+    IN mes_fin INT(11)
+)
+BEGIN
+SELECT COUNT(*) AS cantidad_citas FROM (
+SELECT count(*)
+    FROM rapla.appointment AS a 
+    INNER JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id 
+    INNER JOIN rapla.category AS c ON eav.ATTRIBUTE_VALUE = c.id 
+
+
+    WHERE 
+
+        a.REPETITION_TYPE = "weekly" AND 
+        a.event_id = (
+            SELECT eav2.event_id
+            FROM event_attribute_value AS eav2 
+            WHERE eav2.event_id = a.event_id AND 
+            eav2.ATTRIBUTE_KEY = "curso" AND 
+            eav2.ATTRIBUTE_VALUE IS NOT NULL 
+            ) AND 
+        a.event_id = (
+            SELECT eav3.event_id
+            FROM event_attribute_value AS eav3 
+            WHERE eav3.event_id = a.event_id AND 
+            eav3.ATTRIBUTE_KEY = "especialidad" AND 
+            eav3.ATTRIBUTE_VALUE = id_nombre_materia
+            ) AND 
+	a.event_id = (
+            SELECT eav4.event_id
+            FROM event_attribute_value AS eav4
+            WHERE eav4.event_id = a.event_id AND 
+            eav4.ATTRIBUTE_KEY = "estadoReserva" AND 
+            (eav4.ATTRIBUTE_VALUE ='259' OR 
+            eav4.ATTRIBUTE_VALUE ='260')
+            ) AND 
+	
+	eav.ATTRIBUTE_KEY = "curso" AND 
+        YEAR(a.APPOINTMENT_START) = anio AND 
+        MONTH(a.appointment_start) >= mes_inicio AND MONTH(a.appointment_start) <= mes_fin 
+    GROUP BY  eav.ATTRIBUTE_VALUE
+) AS x;
+END //
+
+DROP PROCEDURE IF EXISTS consultar_cantidad_alumnos_curso_y_aula_anual;
+DELIMITER //
+CREATE PROCEDURE consultar_cantidad_alumnos_curso_y_aula_anual(
+    IN id_nombre_materia INT(11),
+    IN anio YEAR
+)
+BEGIN
+SELECT  a.ID, a.APPOINTMENT_START, eav.ATTRIBUTE_KEY, eav.ATTRIBUTE_VALUE, eav2.ATTRIBUTE_KEY, eav2.ATTRIBUTE_VALUE, eav3.ATTRIBUTE_KEY, eav3.ATTRIBUTE_VALUE
+    FROM rapla.appointment AS a 
+    INNER JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id 
+	INNER JOIN allocation al ON al.APPOINTMENT_ID = a.ID
+    INNER JOIN rapla.category c ON c.ID = eav.ATTRIBUTE_VALUE 
+    INNER JOIN rapla.resource_attribute_value rav ON rav.RESOURCE_ID = al.RESOURCE_ID
+	INNER JOIN event_attribute_value eav2 ON eav.EVENT_ID = eav2.EVENT_ID
+	INNER JOIN event_attribute_value eav3 ON eav.EVENT_ID = eav3.EVENT_ID
+	WHERE eav2.ATTRIBUTE_KEY = 'curso'
+	AND eav.ATTRIBUTE_VALUE = id_nombre_materia
+	AND eav3.ATTRIBUTE_KEY = 'cantidadAlumnos'
+	AND YEAR(a.APPOINTMENT_START) = anio
+	group by eav.EVENT_ID;
+END

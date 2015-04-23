@@ -1,6 +1,6 @@
 package ger;
 
-import java.util.Date;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,10 +8,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.*;
-import java.sql.*;
 
 /**
  *
@@ -71,10 +72,20 @@ public class Conector {
         resultado1 = ejecutarProcedimiento("consultar_materias_sistemas();");
         try {
             while (resultado1.next()) {
+                Materia materia = new Materia();
+                
+                materia.setIdMateria(resultado1.getInt(1));
+                materia.setNombreMateria(resultado1.getString(4));
+                
                 //System.out.println(resultado.getInt(1));
-                resultado2 = ejecutarProcedimiento("consultar_cantidad_cursos_por_materia_anio(" + resultado1.getInt(1) + "," + anio + ");");
+                resultado2 = ejecutarProcedimiento("consultar_cantidad_cursos_por_materia_anio(" + materia.getIdMateria() + "," + anio + ");");
                 resultado2.first();
-                System.out.println("La materia con id: " + resultado1.getInt(1) + ", posee " + resultado2.getInt(1) + " cursos");
+                materia.setCantidadCursos(resultado2.getInt(1));
+                if (materia.getCantidadCursos() != 0)
+                {
+                    System.out.println("La materia: " + materia.getNombreMateria() + ", posee " + materia.getCantidadCursos() + " cursos");
+                }
+
             }
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
@@ -277,20 +288,41 @@ public class Conector {
         }
     }
     
-    public void consultarSoftwareCursosAnual(int anio, String software)
+    public void consultarSoftwareCursosAnual(int anio, String software, String software2)
     {
         conectar();
-        ResultSet resultado1, resultado2 = null;
+        ResultSet resultado1, resultado2 = null, resultado3 = null;
+        ArrayList<Materia> listaSoftwareMaterias = new ArrayList<Materia>();
         resultado1 = ejecutarProcedimiento("consultar_materias_sistemas();");
         try 
         {
             while (resultado1.next()) 
             {
-                resultado2 = ejecutarProcedimiento("consultar_software_cursos_anual(" + resultado1.getInt(1) + "," + anio + ",'" + software + "');");
+                Materia materia = new Materia();
+                List<String> listaSoftware = materia.getSoftware();                    
+                materia.setIdMateria(resultado1.getInt(1));
+                materia.setNombreMateria(resultado1.getString(4));
+                resultado2 = ejecutarProcedimiento("consultar_software_cursos_anual(" + materia.getIdMateria() + "," + anio + ",'" + software + "');");
                 while(resultado2.next())
                 {
-                    System.out.println("La materia: " + resultado1.getString(4) + ", necesita el SOFTWARE: " + resultado2.getString(6));
-                }                
+                    listaSoftware.add(resultado2.getString(6));
+                }
+                
+                resultado3 = ejecutarProcedimiento("consultar_software_cursos_anual(" + materia.getIdMateria() + "," + anio + ",'" + software2 + "');");
+                while(resultado2.next())
+                {
+                    listaSoftware.add(resultado3.getString(6));
+                }
+                listaSoftwareMaterias.add(materia);
+            }
+            
+            for (Materia materia : listaSoftwareMaterias) 
+            {
+                if (materia.getSoftware().size() != 0) 
+                {
+                    System.out.println("La materia: " + materia.getNombreMateria() + ", posee el siguiente SW: " + materia.getSoftware().toString());
+                }
+                
             }
         } catch (SQLException ex) 
         {
@@ -306,6 +338,62 @@ public class Conector {
                 if (resultado2 != null) {
                     resultado1.close();
                 }
+                if (resultado3 != null) {
+                    resultado1.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            cerrar();
+        }
+    }
+    
+    public void consultarCantidadAlumnosAnual(int anio)
+    {
+        conectar();
+        ResultSet resultado1, resultado2 = null;
+        ArrayList<Materia> listaSoftwareMaterias = new ArrayList<Materia>();
+        resultado1 = ejecutarProcedimiento("consultar_materias_sistemas();");
+        try 
+        {
+            while (resultado1.next()) 
+            {
+                Materia materia = new Materia();                   
+                materia.setIdMateria(resultado1.getInt(1));
+                materia.setNombreMateria(resultado1.getString(4));
+                resultado2 = ejecutarProcedimiento("consultar_cantidad_alumnos_curso_y_aula_anual(" + materia.getIdMateria() + "," + anio + ");");
+                while(resultado2.next())
+                {
+                    materia.getCurso().setCantidadAlumnos(resultado2.getInt(8));
+                    materia.getCurso().setNombreCurso(resultado2.getString(6));
+                }
+                
+                listaSoftwareMaterias.add(materia);
+            }
+            
+            for (Materia materia : listaSoftwareMaterias) 
+            {
+                if (materia.getSoftware().size() != 0) 
+                {
+                    System.out.println("La materia: " + materia.getNombreMateria() + ", posee el siguiente SW: " + materia.getSoftware().toString());
+                }
+                
+            }
+        } catch (SQLException ex) 
+        {
+            Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
+        } finally 
+        {
+            try 
+            {
+                if (resultado1 != null) 
+                {
+                    resultado1.close();
+                }
+                if (resultado2 != null) {
+                    resultado1.close();
+                }
+            
             } catch (SQLException ex) {
                 Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
             }
