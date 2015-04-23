@@ -223,35 +223,10 @@ public class Conector {
                 horaInicio += rango;
             }
             
-            Collections.sort(listaCursosEnRango, new Comparator<Horario>() 
-            {
-                @Override
-                public int compare(Horario p1, Horario p2)
-                {
-                    return new Double(p1.getCantidadHoras()).compareTo(new Double(p2.getCantidadHoras())); //To change body of generated methods, choose Tools | Templates.
-                }
-            });
+            ordenarMenorMayor(listaCursosEnRango);
             
-            System.out.println("Menor a Mayor");
-            for (Horario horario : listaCursosEnRango) 
-            {
-                System.out.println(horario.getHoraInicio() + " " + horario.getHoraFin() + " " + horario.getCantidadHoras().toString());
-            }
+            ordenarMayorMenor(listaCursosEnRango);           
             
-            Collections.sort(listaCursosEnRango, new Comparator<Horario>() 
-            {
-                @Override
-                public int compare(Horario p1, Horario p2)
-                {
-                    return new Double(p2.getCantidadHoras()).compareTo(new Double(p1.getCantidadHoras())); //To change body of generated methods, choose Tools | Templates.
-                }
-            });
-            
-            System.out.println("\nMayor a Menor");
-            for (Horario horario : listaCursosEnRango) 
-            {
-                System.out.println(horario.getHoraInicio() + " " + horario.getHoraFin() + " " + horario.getCantidadHoras().toString());
-            }
             
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
@@ -264,6 +239,41 @@ public class Conector {
                 Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
             }
             cerrar();
+        }
+    }
+
+    private void ordenarMayorMenor(ArrayList<Horario> listaCursosEnRango) {
+        Collections.sort(listaCursosEnRango, new Comparator<Horario>()
+        {
+            @Override
+            public int compare(Horario p1, Horario p2)
+            {
+                return new Double(p2.getCantidadHoras()).compareTo(new Double(p1.getCantidadHoras())); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        
+        System.out.println("\nMayor a Menor");
+        for (Horario horario : listaCursosEnRango)
+        {
+            System.out.println(horario.getHoraInicio() + " " + horario.getHoraFin() + " " + horario.getCantidadHoras().toString());
+        }
+    }
+
+    private void ordenarMenorMayor(ArrayList<Horario> listaCursosEnRango) 
+    {
+        Collections.sort(listaCursosEnRango, new Comparator<Horario>()
+        {
+            @Override
+            public int compare(Horario p1, Horario p2)
+            {
+                return new Double(p1.getCantidadHoras()).compareTo(new Double(p2.getCantidadHoras())); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        
+        System.out.println("Menor a Mayor");
+        for (Horario horario : listaCursosEnRango)
+        {
+            System.out.println(horario.getHoraInicio() + " " + horario.getHoraFin() + " " + horario.getCantidadHoras().toString());
         }
     }
     

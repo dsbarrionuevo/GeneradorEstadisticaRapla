@@ -12,6 +12,13 @@ TO DO:
 	*Conflictos – Cantidad por cuatrimestre por año, por docente, por cátedra.
 	*Promedio de horas de uso por mes, por cuatrimestre, por año, por aula
 	
+DUDAS
+	*Cantidad de alumnos. ¿Seria ver cuantos alumnos se ponene en la reserva? (Ese campo deberian cargarlo siempre entonces).
+	*Cantidad de profesores. ¿Para que?
+	*Horarios mas usados por aula. Detallar mejor xq no se entiende que quieren consultar de esto
+	*Horarios menos usados por aula. Idem anterior.
+	*Cantidad de parciales. Tenemos un problemo xq solo los de AED y PPR estan en otra carpeta (y no siempre), el resto ni aparece. ¿Que hacemos entonces?
+	*Promedio de horas de uso por mes por aula. Idem a horarios
 	
 DONE:
 
