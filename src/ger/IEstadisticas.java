@@ -27,11 +27,11 @@ public interface IEstadisticas {
     
     public ArrayList<Horario> obtenerHorariosMenosUsadosPorDia(String fecha, int rango);
     
-    public void obtenerCursosPorMateriaPorAnio();
+    public ArrayList<Curso> obtenerCursosPorMateriaPorAnio(Materia materia, int anio);
     
     //Obtiene una lista de materias, pero unicamente dentro de a carpeta de sistemas.
     public ArrayList<Materia> obtenerMateriasSistemas();
     
-    public ArrayList<Materia> cargarDatosMateriasSistemasCompletos(int anio);
+    public ArrayList<Materia> obtenerMateriasSistemas(int anio);
     
 }

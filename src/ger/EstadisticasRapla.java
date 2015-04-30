@@ -51,254 +51,209 @@ public class EstadisticasRapla implements IEstadisticas {
                 }
                 aulas.add(aula);
             }
-        } 
-        catch (SQLException ex) 
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally
-        {
+        } finally {
             conexion.cerrar();
         }
         return aulas;
     }
 
     @Override
-    public ArrayList<Software> obtenerSoftwarePorAula() 
-    {
+    public ArrayList<Software> obtenerSoftwarePorAula() {
         ArrayList<Software> software = new ArrayList<Software>();
         ArrayList<Aula> aulas = obtenerAulas();
-        for (int i = 0; i < aulas.size(); i++) 
-        {
+        for (int i = 0; i < aulas.size(); i++) {
             software.add(aulas.get(i).getSoftware());
         }
         return software;
     }
 
     @Override
-    public ArrayList<Materia> obtenerSoftwarePorMateriaPorAnio(int anio) 
-    {               
+    public ArrayList<Materia> obtenerSoftwarePorMateriaPorAnio(int anio) {
         ArrayList<Materia> materias = obtenerMateriasSistemas();
-        for (int i = 0; i < materias.size(); i++) 
-        {
-            try 
-            {
+        for (int i = 0; i < materias.size(); i++) {
+            try {
                 ArrayList<Software> listaSoftware = new ArrayList<Software>();
                 conexion.conectar();
                 ResultSet resultado1 = conexion.ejecutarProcedimiento("consultar_software_cursos_anual(" + materias.get(i).getIdMateria() + "," + anio + ",'software1');");
-                while (resultado1.next()) 
-                {
+                while (resultado1.next()) {
                     listaSoftware.add(new Software(resultado1.getString("software")));
                 }
-                
+
                 ResultSet resultado2 = conexion.ejecutarProcedimiento("consultar_software_cursos_anual(" + materias.get(i).getIdMateria() + "," + anio + ",'software2');");
-                while (resultado2.next()) 
-                {
+                while (resultado2.next()) {
                     listaSoftware.add(new Software(resultado2.getString("software")));
                 }
                 materias.get(i).setSoftware(listaSoftware);
-            } 
-            catch (SQLException ex) 
-            {
+            } catch (SQLException ex) {
                 Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            finally
-            {
+            } finally {
                 conexion.cerrar();
             }
         }
         return materias;
     }
 
-    
-    public ArrayList<Software> obtenerSoftwarePorMateriaPorAnio(Materia materia, int anio) 
-    { 
+    public ArrayList<Software> obtenerSoftwarePorMateriaPorAnio(Materia materia, int anio) {
         ArrayList<Software> listaSoftware = new ArrayList<Software>();
-        try 
-        {
-            
+        try {
+
             conexion.conectar();
             ResultSet resultado1 = conexion.ejecutarProcedimiento("consultar_software_cursos_anual(" + materia.getIdMateria() + "," + anio + ",'software1');");
-            while (resultado1.next()) 
-            {
+            while (resultado1.next()) {
                 listaSoftware.add(new Software(resultado1.getString("software")));
             }
-                
+
             ResultSet resultado2 = conexion.ejecutarProcedimiento("consultar_software_cursos_anual(" + materia.getIdMateria() + "," + anio + ",'software2');");
-            while (resultado2.next()) 
-            {
+            while (resultado2.next()) {
                 listaSoftware.add(new Software(resultado2.getString("software")));
             }
             materia.setSoftware(listaSoftware);
-        } 
-        catch (SQLException ex) 
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally
-        {
+        } finally {
             conexion.cerrar();
         }
         return listaSoftware;
     }
-    
+
     @Override
-    public int obtenerCantidadAlumnosPorAnio(int anio) 
-    {
+    public int obtenerCantidadAlumnosPorAnio(int anio) {
         int cantidadAlumnosAnual = 0;
         //Por cada una d ela s materias de sistemas, ejecuto el procedimiento y mantengo un acumulador que devuelvo
-        for (Materia materia : obtenerMateriasSistemas()) 
-        {
+        for (Materia materia : obtenerMateriasSistemas()) {
             cantidadAlumnosAnual += obtenerCantidadAlumnosPorAnioPorMateria(materia, anio);
         }
         return cantidadAlumnosAnual;
     }
 
     @Override
-    public int obtenerCantidadAlumnosPorAnioPorMateria(Materia materia, int anio) 
-    {
+    public int obtenerCantidadAlumnosPorAnioPorMateria(Materia materia, int anio) {
         int cantidadAlumnos = 0;
-        try 
-        {
+        try {
             conexion.conectar();
-            ResultSet resultado =  conexion.ejecutarProcedimiento("consultar_cantidad_alumnos_curso_y_aula_anual("+ materia.getIdMateria() + "," + anio + ");");
-            while (resultado.next()) 
-            {               
-                cantidadAlumnos = resultado. getInt("cantidadAlumnos");
+            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_cantidad_alumnos_curso_y_aula_anual(" + materia.getIdMateria() + "," + anio + ");");
+            while (resultado.next()) {
+                cantidadAlumnos += resultado.getInt("cantidadAlumnos");
             }
-        }
-        catch (SQLException ex) 
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally
-        {
+        } finally {
             conexion.cerrar();
-        }   
+        }
         return cantidadAlumnos;
     }
 
     @Override
-    public ArrayList<Horario> obtenerHorariosPorDia(java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate) 
-    {
+    public ArrayList<Horario> obtenerHorariosPorDia(java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate) {
         ArrayList<Horario> listaHorarios = new ArrayList<Horario>();
-        try 
-        {
-            conexion.conectar();            
+        try {
+            conexion.conectar();
             String fecha = fechaDesdeDate.toString();
-            while(fechaDesdeDate.before(fechaHastaDate))
-            {
+            while (fechaDesdeDate.before(fechaHastaDate)) {
                 Horario horario = new Horario();
                 ResultSet resultado = conexion.ejecutarProcedimiento("consultar_total_horas_por_fecha_hora_inicio_fin('" + fecha + "', '08:00:00','23:00:00');");
                 resultado.first();
-                
-                horario.setCantidadHoras((double)resultado.getInt("horasTotales"));
+
+                horario.setCantidadHoras((double) resultado.getInt("horasTotales"));
                 horario.setFecha(fecha);
-                
+
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 Calendar c = Calendar.getInstance();
-                
+
                 //Le agrega un dia mas a la fecha para que avance en el SQL
-                fecha = agregarDiaConsultaBaseDatos(c, sdf, fecha); 
-                
+                fecha = agregarDiaConsultaBaseDatos(c, sdf, fecha);
+
                 //agrega un dia mas pero a la fecha que se usa en el while
                 fechaDesdeDate = agregarDiaDate(fechaDesdeDate, c);
-                
-                
+
                 listaHorarios.add(horario);
             }
 
-        } 
-        catch (SQLException ex) 
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
-        } 
-        catch (ParseException ex) 
-        {
+        } catch (ParseException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally 
-        {
+        } finally {
             conexion.cerrar();
         }
         return listaHorarios;
     }
 
-    private String agregarDiaConsultaBaseDatos(Calendar c, SimpleDateFormat sdf, String fecha) throws ParseException 
-    {
+    private String agregarDiaConsultaBaseDatos(Calendar c, SimpleDateFormat sdf, String fecha) throws ParseException {
         c.setTime(sdf.parse(fecha));
         c.add(Calendar.DATE, 1);  // number of days to add
         fecha = sdf.format(c.getTime());
         return fecha;
     }
 
-    private Date agregarDiaDate(Date fechaDesdeDate, Calendar c) 
-    {
+    private Date agregarDiaDate(Date fechaDesdeDate, Calendar c) {
         Calendar c2 = Calendar.getInstance();
         c2.setTime(fechaDesdeDate);
         c2.add(Calendar.DATE, 1);
         fechaDesdeDate = c.getTime();
         return fechaDesdeDate;
     }
-    
+
     @Override
-    public ArrayList<Horario> obtenerHorariosMasUsadosPorDia(String fecha, int rango) 
-    {
+    public ArrayList<Horario> obtenerHorariosMasUsadosPorDia(String fecha, int rango) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArrayList<Horario> obtenerHorariosMenosUsadosPorDia(String fecha, int rango) 
-    {
+    public ArrayList<Horario> obtenerHorariosMenosUsadosPorDia(String fecha, int rango) {
         ArrayList<Horario> listaHorarios = new ArrayList<Horario>();
         return listaHorarios;
     }
 
     @Override
-    public void obtenerCursosPorMateriaPorAnio()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ArrayList<Curso> obtenerCursosPorMateriaPorAnio(Materia materia, int anio) {
+        ArrayList<Curso> cursos = new ArrayList<>();
+        try {
+            conexion.conectar();
+            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_cursos_por_materia_por_anio(" + materia.getIdMateria() + "," + anio + ")");
+            while (resultado.next()) {
+                Curso curso = new Curso();
+                curso.setNombreCurso(resultado.getString("curso"));
+                curso.setCantidadAlumnos(-1);
+                cursos.add(curso);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return cursos;
     }
 
     @Override
-    public ArrayList<Materia> obtenerMateriasSistemas()
-    {
+    public ArrayList<Materia> obtenerMateriasSistemas() {
         ArrayList<Materia> materias = new ArrayList<>();
-        try 
-        {
+        try {
             conexion.conectar();
             ResultSet resultado = conexion.ejecutarProcedimiento("consultar_materias_sistemas()");
-            while (resultado.next()) 
-            {                
+            while (resultado.next()) {
                 Materia materia = new Materia();
                 materia.setIdMateria(resultado.getInt("ID"));
                 materia.setNombreMateria(resultado.getString("LABEL"));
                 materias.add(materia);
             }
-        } 
-        catch (SQLException ex) 
-        {
+        } catch (SQLException ex) {
             Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally
-        {
+        } finally {
             conexion.cerrar();
         }
-        
         return materias;
     }
 
     @Override
-    public ArrayList<Materia> cargarDatosMateriasSistemasCompletos(int anio) 
-    {
-        ArrayList<Materia> listaMaterias = obtenerMateriasSistemas();
-        for (Materia materia : listaMaterias) 
-        {
+    public ArrayList<Materia> obtenerMateriasSistemas(int anio) {
+        ArrayList<Materia> materias = obtenerMateriasSistemas();
+        for (Materia materia : materias) {
             //Obtiene los sw de las materias
             materia.setSoftware(obtenerSoftwarePorMateriaPorAnio(materia, anio));
-            
+
         }
-        return listaMaterias;
+        return materias;
     }
 
-    
 }
