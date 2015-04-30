@@ -64,10 +64,12 @@ public class EstadisticasRapla implements IEstadisticas {
     }
 
     @Override
-    public ArrayList<Software> obtenerSoftwarePorAula() {
+    public ArrayList<Software> obtenerSoftwarePorAula() 
+    {
         ArrayList<Software> software = new ArrayList<Software>();
         ArrayList<Aula> aulas = obtenerAulas();
-        for (int i = 0; i < aulas.size(); i++) {
+        for (int i = 0; i < aulas.size(); i++) 
+        {
             software.add(aulas.get(i).getSoftware());
         }
         return software;
@@ -108,6 +110,38 @@ public class EstadisticasRapla implements IEstadisticas {
         return materias;
     }
 
+    
+    public ArrayList<Software> obtenerSoftwarePorMateriaPorAnio(Materia materia, int anio) 
+    { 
+        ArrayList<Software> listaSoftware = new ArrayList<Software>();
+        try 
+        {
+            
+            conexion.conectar();
+            ResultSet resultado1 = conexion.ejecutarProcedimiento("consultar_software_cursos_anual(" + materia.getIdMateria() + "," + anio + ",'software1');");
+            while (resultado1.next()) 
+            {
+                listaSoftware.add(new Software(resultado1.getString("software")));
+            }
+                
+            ResultSet resultado2 = conexion.ejecutarProcedimiento("consultar_software_cursos_anual(" + materia.getIdMateria() + "," + anio + ",'software2');");
+            while (resultado2.next()) 
+            {
+                listaSoftware.add(new Software(resultado2.getString("software")));
+            }
+            materia.setSoftware(listaSoftware);
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally
+        {
+            conexion.cerrar();
+        }
+        return listaSoftware;
+    }
+    
     @Override
     public int obtenerCantidadAlumnosPorAnio(int anio) 
     {
@@ -220,12 +254,13 @@ public class EstadisticasRapla implements IEstadisticas {
     }
 
     @Override
-    public void obtenerCursosPorMateriaPorAnio() {
+    public void obtenerCursosPorMateriaPorAnio()
+    {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ArrayList<Materia> obtenerMateriasSistemas() 
+    public ArrayList<Materia> obtenerMateriasSistemas()
     {
         ArrayList<Materia> materias = new ArrayList<>();
         try 
@@ -252,4 +287,18 @@ public class EstadisticasRapla implements IEstadisticas {
         return materias;
     }
 
+    @Override
+    public ArrayList<Materia> cargarDatosMateriasSistemasCompletos(int anio) 
+    {
+        ArrayList<Materia> listaMaterias = obtenerMateriasSistemas();
+        for (Materia materia : listaMaterias) 
+        {
+            //Obtiene los sw de las materias
+            materia.setSoftware(obtenerSoftwarePorMateriaPorAnio(materia, anio));
+            
+        }
+        return listaMaterias;
+    }
+
+    
 }

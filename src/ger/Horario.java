@@ -19,6 +19,7 @@ public class Horario
     private String fechaFin;
     private Double cantidadHoras;
     private int dia;
+    //fecha a la que pertenece ese horario. Para tener una referencia de a que dia se refiere
     private String fecha;
 
     /**
