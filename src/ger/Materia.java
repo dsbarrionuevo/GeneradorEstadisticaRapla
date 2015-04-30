@@ -16,14 +16,14 @@ import java.util.List;
 public class Materia 
 {
     private int idMateria;
-    private ArrayList<String> software;
+    private ArrayList<Software> software;
     private String nombreMateria;
     private int cantidadCursos;
     private ArrayList<Curso> curso;
 
     public Materia()
     {
-        this.software = new ArrayList<String>();
+        this.software = new ArrayList<Software>();
         this.curso = new ArrayList<Curso>();
     }
     
@@ -57,20 +57,6 @@ public class Materia
     }
 
     /**
-     * @return the software
-     */
-    public ArrayList<String> getSoftware() {
-        return software;
-    }
-
-    /**
-     * @param software the software to set
-     */
-    public void setSoftware(ArrayList<String> software) {
-        this.software = software;
-    }
-
-    /**
      * @return the cantidadCursos
      */
     public int getCantidadCursos() {
@@ -96,6 +82,20 @@ public class Materia
      */
     public void setCurso(ArrayList<Curso> curso) {
         this.curso = curso;
+    }
+
+    /**
+     * @return the software
+     */
+    public ArrayList<Software> getSoftware() {
+        return software;
+    }
+
+    /**
+     * @param software the software to set
+     */
+    public void setSoftware(ArrayList<Software> software) {
+        this.software = software;
     }
    
 }

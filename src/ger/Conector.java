@@ -172,7 +172,8 @@ public class Conector {
         }
     }
 
-    public void consultarHorarioMasUsadoPorDia(String fecha, int rango) {
+    public void consultarHorarioMasUsadoPorDia(String fecha, int rango) 
+    {
         ResultSet resultado1 = null;
         ArrayList<Horario> listaCursosEnRango = new ArrayList<Horario>();
         int horaInicio = 8;
@@ -298,7 +299,8 @@ public class Conector {
             while (resultado1.next()) 
             {
                 Materia materia = new Materia();
-                List<String> listaSoftware = materia.getSoftware();                    
+                //List<String> listaSoftware = materia.getSoftware();    
+                List<String> listaSoftware = new ArrayList<String>();    
                 materia.setIdMateria(resultado1.getInt(1));
                 materia.setNombreMateria(resultado1.getString(4));
                 resultado2 = ejecutarProcedimiento("consultar_software_cursos_anual(" + materia.getIdMateria() + "," + anio + ",'" + software + "');");

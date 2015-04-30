@@ -10,7 +10,8 @@ package ger;
  *
  * @author MatiasNB
  */
-public class Curso {
+public class Curso 
+{
     private int cantidadAlumnos;
     private String nombreCurso;
 

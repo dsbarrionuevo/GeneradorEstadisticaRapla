@@ -12,18 +12,24 @@ public interface IEstadisticas {
     
     public ArrayList<Software> obtenerSoftwarePorAula();
     
-    public ArrayList<Software> obtenerSoftwarePorMateria();
+    //Me devuelve un array de materias, dentro de las cuales estan cargados los Software que usan
+    //La otra es hacer que devuelva un array de software, pero tenemos que pasarle por parametro la materia.
+    public ArrayList<Materia> obtenerSoftwarePorMateriaPorAnio(int anio);
     
-    public int obtenerCantidadAlumnosPorAnio();
+    public int obtenerCantidadAlumnosPorAnio(int anio);
     
-    public int obtenerCantidadAlumnosPorAnioPorMateria();
+    //Me devuelve para la materia pasada por parametro, junto con el año, la cantidad de alumnos que tiene cargado
+    public int obtenerCantidadAlumnosPorAnioPorMateria(Materia materia, int anio);
     
-    public ArrayList<Horario> obtenerHorariosPorDia();//este es el que consulta por rango de horas
+    public ArrayList<Horario> obtenerHorariosPorDia(java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate);
     
-    public ArrayList<Horario> obtenerHorariosMasUsadosPorDia();
+    public ArrayList<Horario> obtenerHorariosMasUsadosPorDia(String fecha, int rango);
     
-    public ArrayList<Horario> obtenerHorariosMenosUsadosPorDia();
+    public ArrayList<Horario> obtenerHorariosMenosUsadosPorDia(String fecha, int rango);
     
     public void obtenerCursosPorMateriaPorAnio();
+    
+    //Obtiene una lista de materias, pero unicamente dentro de a carpeta de sistemas.
+    public ArrayList<Materia> obtenerMateriasSistemas();
     
 }

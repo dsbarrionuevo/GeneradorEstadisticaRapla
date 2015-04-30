@@ -16,8 +16,10 @@ public class Horario
 {
     private String horaInicio;
     private String horaFin;
+    private String fechaFin;
     private Double cantidadHoras;
     private int dia;
+    private String fecha;
 
     /**
      * @return the horaInicio
@@ -73,5 +75,19 @@ public class Horario
      */
     public void setDia(int dia) {
         this.dia = dia;
+    }
+
+    /**
+     * @return the fecha
+     */
+    public String getFecha() {
+        return fecha;
+    }
+
+    /**
+     * @param fecha the fecha to set
+     */
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 }
