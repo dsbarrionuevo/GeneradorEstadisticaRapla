@@ -217,3 +217,25 @@ SELECT  a.ID, a.APPOINTMENT_START, eav.ATTRIBUTE_KEY, eav.ATTRIBUTE_VALUE, eav2.
 	AND YEAR(a.APPOINTMENT_START) = anio
 	group by eav.EVENT_ID;
 END
+
+DROP PROCEDURE IF EXISTS consultar_cursos_por_materia_por_anio;
+DELIMITER //
+CREATE PROCEDURE consultar_cursos_por_materia_por_anio
+(
+IN id_materia INT(11),
+IN anio YEAR
+)
+BEGIN
+SELECT  a.ID, a.APPOINTMENT_START, eav.ATTRIBUTE_KEY, eav.ATTRIBUTE_VALUE as idMateria, eav2.ATTRIBUTE_KEY, eav2.ATTRIBUTE_VALUE as curso
+    FROM rapla.appointment AS a 
+    INNER JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id 
+	INNER JOIN allocation al ON al.APPOINTMENT_ID = a.ID
+    INNER JOIN rapla.category c ON c.ID = eav.ATTRIBUTE_VALUE 
+    INNER JOIN rapla.resource_attribute_value rav ON rav.RESOURCE_ID = al.RESOURCE_ID
+	INNER JOIN event_attribute_value eav2 ON eav.EVENT_ID = eav2.EVENT_ID
+	INNER JOIN event_attribute_value eav3 ON eav.EVENT_ID = eav3.EVENT_ID
+	WHERE eav2.ATTRIBUTE_KEY = 'curso'
+	AND eav.ATTRIBUTE_VALUE = id_materia
+	AND YEAR(a.APPOINTMENT_START) = anio
+	group by eav.EVENT_ID;
+END
