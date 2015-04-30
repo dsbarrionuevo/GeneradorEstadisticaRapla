@@ -239,3 +239,39 @@ SELECT  a.ID, a.APPOINTMENT_START, eav.ATTRIBUTE_KEY, eav.ATTRIBUTE_VALUE as idM
 	AND YEAR(a.APPOINTMENT_START) = anio
 	group by eav.EVENT_ID;
 END
+
+
+/*
+//Union de cursas con y sin cantidadAlumnos.
+SELECT * 
+    FROM rapla.appointment AS a 
+    RIGHT JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id 
+	WHERE 1=1 
+	AND a.event_id = (
+		SELECT eav2.event_id
+		FROM event_attribute_value AS eav2 
+		WHERE eav2.event_id = a.event_id AND 
+		eav2.ATTRIBUTE_KEY = "especialidad" AND 
+		eav2.ATTRIBUTE_VALUE = '572'
+	) 
+	AND eav.attribute_key = "cantidadAlumnos" 
+	AND YEAR(a.APPOINTMENT_START) = 2015
+	group by eav.EVENT_ID
+	UNION
+	SELECT *
+    FROM rapla.appointment AS a2 
+    RIGHT JOIN rapla.event_attribute_value AS eav ON a2.event_id = eav.event_id 
+	WHERE 1=1 
+	AND a2.event_id = (
+		SELECT eav2.event_id
+		FROM event_attribute_value AS eav2 
+		WHERE eav2.event_id = a2.event_id AND 
+		eav2.ATTRIBUTE_KEY = "especialidad" AND 
+		eav2.ATTRIBUTE_VALUE = '572'
+	) 
+	AND YEAR(a2.APPOINTMENT_START) = 2015 
+	group by eav.EVENT_ID
+
+
+
+*/
