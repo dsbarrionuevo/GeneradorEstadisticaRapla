@@ -32,9 +32,25 @@ public class Main {
 //        {
 //            System.out.println(materia.getNombreMateria() + "Cantidad Alumnos: "+ estadisticas.obtenerCantidadAlumnosPorAnioPorMateria(materia, 2015));
 //        }
-        for (Horario horario : estadisticas.obtenerHorariosPorDia(Date.valueOf("2015-4-1"), Date.valueOf("2015-5-30"))) 
+//        for (Horario horario : estadisticas.obtenerHorariosPorDia(Date.valueOf("2015-4-1"), Date.valueOf("2015-5-30"))) 
+//        {
+//            System.out.println(horario.getFecha() + "    " + horario.getCantidadHoras());
+//        }
+        for (Materia materia : estadisticas.obtenerMateriasSistemasCompletas(2015)) 
         {
-            System.out.println(horario.getFecha() + "    " + horario.getCantidadHoras());
+            System.out.println("Nombre materia: " + materia.getNombreMateria());
+            System.out.println("Id materia: " + materia.getIdMateria());
+            System.out.println("Software");
+            for (Software software : materia.getSoftware()) 
+            {
+                System.out.println(software.getNombre());
+            }
+            System.out.println("Cursos:");
+            for (Curso cursos : materia.getCurso()) 
+            {
+                System.out.println("Nombre Curso: " + cursos.getNombreCurso());
+                System.out.println("Cantidad Alumnos: " + cursos.getCantidadAlumnos());
+            }
         }
     }
 

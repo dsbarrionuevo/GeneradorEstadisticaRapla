@@ -241,6 +241,28 @@ SELECT  a.ID, a.APPOINTMENT_START, eav.ATTRIBUTE_KEY, eav.ATTRIBUTE_VALUE as idM
 END
 
 
+DROP PROCEDURE IF EXISTS consultar_cantidad_alumnos_curso_especifico;
+DELIMITER //
+CREATE PROCEDURE consultar_cantidad_alumnos_curso_especifico(
+    IN id_nombre_materia INT(11),
+	IN curso VARCHAR(50),
+    IN anio YEAR
+)
+BEGIN
+SELECT  eav3.ATTRIBUTE_VALUE as cantidadAlumnos
+    FROM rapla.appointment AS a 
+    INNER JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id 
+    INNER JOIN rapla.category c ON c.ID = eav.ATTRIBUTE_VALUE 
+	INNER JOIN event_attribute_value eav2 ON eav.EVENT_ID = eav2.EVENT_ID
+	INNER JOIN event_attribute_value eav3 ON eav.EVENT_ID = eav3.EVENT_ID
+	WHERE eav2.ATTRIBUTE_KEY = 'curso'
+	AND eav.ATTRIBUTE_VALUE = id_nombre_materia
+	AND eav2.ATTRIBUTE_VALUE = curso
+	AND eav3.ATTRIBUTE_KEY = 'cantidadAlumnos'
+	AND YEAR(a.APPOINTMENT_START) = anio
+	group by eav.EVENT_ID;
+END
+
 /*
 //Union de cursas con y sin cantidadAlumnos.
 SELECT * 

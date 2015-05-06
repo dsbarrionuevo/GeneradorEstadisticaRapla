@@ -32,6 +32,6 @@ public interface IEstadisticas {
     //Obtiene una lista de materias, pero unicamente dentro de a carpeta de sistemas.
     public ArrayList<Materia> obtenerMateriasSistemas();
     
-    public ArrayList<Materia> obtenerMateriasSistemas(int anio);
+    public ArrayList<Materia> obtenerMateriasSistemasCompletas(int anio);
     
 }

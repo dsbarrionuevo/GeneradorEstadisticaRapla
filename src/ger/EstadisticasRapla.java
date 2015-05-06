@@ -127,6 +127,32 @@ public class EstadisticasRapla implements IEstadisticas {
         }
         return cantidadAlumnosAnual;
     }
+    
+    private int obtenerCantidadAlumnosCursoEspecifico(Curso curso, Materia materia, int anio)
+    {
+        try 
+        {
+            conexion.conectar();
+            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_cantidad_alumnos_curso_especifico(" + materia.getIdMateria() + ",'" + curso.getNombreCurso() + "'," + anio + ");");
+            if (resultado.next()) 
+            {
+                return resultado.getInt("cantidadAlumnos");
+            }
+            else
+            {
+                return -1;
+            }
+        } 
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        } 
+        finally 
+        {
+            conexion.cerrar();
+        }
+    }
 
     @Override
     public int obtenerCantidadAlumnosPorAnioPorMateria(Materia materia, int anio) {
@@ -213,10 +239,11 @@ public class EstadisticasRapla implements IEstadisticas {
         try {
             conexion.conectar();
             ResultSet resultado = conexion.ejecutarProcedimiento("consultar_cursos_por_materia_por_anio(" + materia.getIdMateria() + "," + anio + ")");
-            while (resultado.next()) {
+            while (resultado.next()) 
+            {
                 Curso curso = new Curso();
                 curso.setNombreCurso(resultado.getString("curso"));
-                curso.setCantidadAlumnos(-1);
+                curso.setCantidadAlumnos(obtenerCantidadAlumnosCursoEspecifico(curso, materia, anio));
                 cursos.add(curso);
             }
         } catch (SQLException ex) {
@@ -246,12 +273,14 @@ public class EstadisticasRapla implements IEstadisticas {
     }
 
     @Override
-    public ArrayList<Materia> obtenerMateriasSistemas(int anio) {
+    public ArrayList<Materia> obtenerMateriasSistemasCompletas(int anio) {
         ArrayList<Materia> materias = obtenerMateriasSistemas();
-        for (Materia materia : materias) {
+        for (Materia materia : materias) 
+        {
             //Obtiene los sw de las materias
             materia.setSoftware(obtenerSoftwarePorMateriaPorAnio(materia, anio));
-
+            //seteo los cursos que tiene la materia junto con la cantida de alumnos que tiene
+            materia.setCurso(obtenerCursosPorMateriaPorAnio(materia, anio));
         }
         return materias;
     }
