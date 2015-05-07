@@ -12,7 +12,8 @@ import java.util.logging.Logger;
  *
  * @author Barrionuevo Diego
  */
-public class Conexion {
+public class Conexion 
+{
 
     private Connection conexion;
     private Statement sentencia;
@@ -35,7 +36,7 @@ public class Conexion {
 
     public void conectar() {
         try {
-            conexion = DriverManager.getConnection("jdbc:mysql://127.0.0.1/" + baseDatos, usuario, clave);
+            setConexion(DriverManager.getConnection("jdbc:mysql://127.0.0.1/" + baseDatos, usuario, clave));
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -43,8 +44,8 @@ public class Conexion {
 
     public ResultSet ejecutarProcedimiento(String nombreProcedimiento) {
         try {
-            sentencia = conexion.createStatement();
-            ResultSet resultado = sentencia.executeQuery("CALL " + nombreProcedimiento);
+            setSentencia(getConexion().createStatement());
+            ResultSet resultado = getSentencia().executeQuery("CALL " + nombreProcedimiento);
             return resultado;
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
@@ -54,10 +55,38 @@ public class Conexion {
 
     public void cerrar() {
         try {
-            this.conexion.close();
+            this.getConexion().close();
         } catch (SQLException ex) {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * @return the conexion
+     */
+    public Connection getConexion() {
+        return conexion;
+    }
+
+    /**
+     * @param conexion the conexion to set
+     */
+    public void setConexion(Connection conexion) {
+        this.conexion = conexion;
+    }
+
+    /**
+     * @return the sentencia
+     */
+    public Statement getSentencia() {
+        return sentencia;
+    }
+
+    /**
+     * @param sentencia the sentencia to set
+     */
+    public void setSentencia(Statement sentencia) {
+        this.sentencia = sentencia;
     }
 
 }

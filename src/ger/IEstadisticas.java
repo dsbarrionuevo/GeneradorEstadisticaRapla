@@ -34,4 +34,5 @@ public interface IEstadisticas {
     
     public ArrayList<Materia> obtenerMateriasSistemasCompletas(int anio);
     
+    public ArrayList<ArrayList<Horario>> obtenerRangoHorariosFechas(java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate, int rango);
 }

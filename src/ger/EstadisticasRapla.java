@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -223,10 +225,99 @@ public class EstadisticasRapla implements IEstadisticas {
     }
 
     @Override
-    public ArrayList<Horario> obtenerHorariosMasUsadosPorDia(String fecha, int rango) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ArrayList<Horario> obtenerHorariosMasUsadosPorDia(String fecha, int rango) 
+    {
+        ArrayList<Horario> listaHorarios = new ArrayList<Horario>();
+        int horaInicio = 8;
+        int i = 0;
+        try 
+        {
+            conexion.conectar();
+            while (horaInicio < 23) 
+            {
+                int horaFin = horaInicio + rango;
+                String horaInicioString, horaFinString;
+                horaInicioString = ((String.valueOf(horaInicio).length() == 1) ? ("0" + horaInicio) : horaInicio + "") + ":00:00";
+                horaFinString = ((String.valueOf(horaFin).length() == 1) ? ("0" + horaFin) : horaFin + "") + ":00:00";
+                //resultado1 = ejecutarProcedimiento("consultar_cantidad_cursos_por_rango_horario_fecha('" + fecha + "', '" + horaInicioString + "','" + horaFinString + "');");
+
+                conexion.setSentencia(conexion.getConexion().createStatement());
+                /*esta consulta busca todos los cursos (o materias) que estan dentro del rango de horas:
+                esto puede ser: que justo termine en ese rango, comienzo en ese rango, comience y termine en ese rango,
+                o que haya comenzado antes del inicio del rango y termine desp del final del rango.
+                Graficamente son la cantidad de cuadraditos que muestra el rapla para tal dia en el horario indicado por el rango.
+                Esta hardcodeada en el codigo por el hhecho de que al llamarla como procedimiento tira error con el ecndoe por el hecho
+                de comprar fechas con date_format.
+                */
+                String consulta = "SELECT count(*) \n"
+                        + "FROM rapla.appointment AS a \n"
+                        + "INNER JOIN rapla.event_attribute_value AS eav ON a.event_id = eav.event_id \n"
+                        + "JOIN allocation al ON al.APPOINTMENT_ID = a.ID\n"
+                        + "JOIN rapla.category c ON c.ID = eav.ATTRIBUTE_VALUE\n"
+                        + "JOIN rapla.resource_attribute_value rav ON rav.RESOURCE_ID = al.RESOURCE_ID\n"
+                        + "WHERE rav.ATTRIBUTE_KEY = \"name\" \n"
+                        + "AND eav.ATTRIBUTE_KEY = \"especialidad\" \n"
+                        + "AND '" + fecha + "' BETWEEN a.APPOINTMENT_START AND a.REPETITION_END \n"
+                        + "AND (\n"
+                        + "\n"
+                        + "( DATE_FORMAT(a.APPOINTMENT_START,'%T')>='" + horaInicioString + "' AND DATE_FORMAT(a.APPOINTMENT_START,'%T')<'" + horaFinString + "' )\n"
+                        + "OR\n"
+                        + "( DATE_FORMAT(a.APPOINTMENT_END,'%T')>'" + horaInicioString + "' AND DATE_FORMAT(a.APPOINTMENT_END,'%T')<='" + horaFinString + "' )\n"
+                        + "OR\n"
+                        + "( DATE_FORMAT(a.APPOINTMENT_START,'%T')<'" + horaInicioString + "' AND DATE_FORMAT(a.APPOINTMENT_END,'%T')>'" + horaFinString + "' )\n"
+                        + "\n"
+                        + ")"
+                        + ""
+                        + "AND DAYNAME(a.APPOINTMENT_START) = DAYNAME('" + fecha + "')\n"
+                        + "AND a.ID NOT IN(\n"
+                        + "	SELECT ae.APPOINTMENT_ID \n"
+                        + "	FROM appointment_exception ae \n"
+                        + "	WHERE DATE(ae.EXCEPTION_DATE) = '" + fecha + "'\n"
+                        + ")";
+                ResultSet resultado = conexion.getSentencia().executeQuery(consulta);
+
+                resultado.first();
+                
+                Horario horas = new Horario();
+                horas.setHoraInicio(horaInicioString);
+                horas.setHoraFin(horaFinString);
+                horas.setCantidadHoras(resultado.getDouble(1));
+                
+                listaHorarios.add(horas);
+                //System.out.println("Cantidad de cursos para la fecha " + fecha + " desde las " + horaInicioString + " y las " + horaFinString + ": " + resultado1.getInt(1));
+                i++;
+                horaInicio += rango;
+            }
+            
+        }
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(EstadisticasRapla.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        finally 
+        {
+            conexion.cerrar();
+        }
+        return listaHorarios;
     }
 
+        private void ordenarMayorMenor(ArrayList<Horario> listaCursosEnRango) {
+        Collections.sort(listaCursosEnRango, new Comparator<Horario>()
+        {
+            @Override
+            public int compare(Horario p1, Horario p2)
+            {
+                return new Double(p2.getCantidadHoras()).compareTo(new Double(p1.getCantidadHoras())); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        
+        System.out.println("\nMayor a Menor");
+        for (Horario horario : listaCursosEnRango)
+        {
+            System.out.println(horario.getHoraInicio() + " " + horario.getHoraFin() + " " + horario.getCantidadHoras().toString());
+        }
+    }
+        
     @Override
     public ArrayList<Horario> obtenerHorariosMenosUsadosPorDia(String fecha, int rango) {
         ArrayList<Horario> listaHorarios = new ArrayList<Horario>();
@@ -283,6 +374,36 @@ public class EstadisticasRapla implements IEstadisticas {
             materia.setCurso(obtenerCursosPorMateriaPorAnio(materia, anio));
         }
         return materias;
+    }
+
+    @Override
+    public ArrayList<ArrayList<Horario>> obtenerRangoHorariosFechas(Date fechaDesdeDate, Date fechaHastaDate, int rango) 
+    {
+        ArrayList<ArrayList<Horario>> arraryArrayHorarios = new ArrayList<ArrayList<Horario>>();
+        try 
+        {
+                           String fecha = fechaDesdeDate.toString();
+            while (fechaDesdeDate.before(fechaHastaDate)) 
+            {
+ 
+                arraryArrayHorarios.add(obtenerHorariosMasUsadosPorDia(fecha, rango));
+                
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                Calendar c = Calendar.getInstance();
+                
+                //Le agrega un dia mas a la fecha para que avance en el SQL
+                fecha = agregarDiaConsultaBaseDatos(c, sdf, fecha);
+                
+                //agrega un dia mas pero a la fecha que se usa en el while
+                fechaDesdeDate = agregarDiaDate(fechaDesdeDate, c);
+            }
+            
+        } 
+        catch (Exception e) 
+        {
+        }
+
+        return arraryArrayHorarios;
     }
 
 }
