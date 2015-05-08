@@ -282,6 +282,7 @@ public class EstadisticasRapla implements IEstadisticas {
                 horas.setHoraInicio(horaInicioString);
                 horas.setHoraFin(horaFinString);
                 horas.setCantidadHoras(resultado.getDouble(1));
+                horas.setFecha(fecha);
                 
                 listaHorarios.add(horas);
                 //System.out.println("Cantidad de cursos para la fecha " + fecha + " desde las " + horaInicioString + " y las " + horaFinString + ": " + resultado1.getInt(1));
