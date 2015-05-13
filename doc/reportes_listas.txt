@@ -12,6 +12,10 @@ TO DO:
 	*Conflictos – Cantidad por cuatrimestre por año, por docente, por cátedra.
 	*Promedio de horas de uso por mes, por cuatrimestre, por año, por aula
 	
+	*Horario mas usado por un dia especifico (HECHO)
+(HACER)	*Promedio de rango de horarios de una dia en especifico de un cuatrimestre entero o de un año o de lo que sea, pero solo los lunes por ejemplo
+	*Rango de horarios por semanas. o sea, Semana 1 que me muestre todos los rangos y de color segun sean definiciones previas. (HECHO)
+	
 DUDAS
 	*Cantidad de alumnos. ¿Seria ver cuantos alumnos se ponene en la reserva? (Ese campo deberian cargarlo siempre entonces).
 	*Cantidad de profesores. ¿Para que?

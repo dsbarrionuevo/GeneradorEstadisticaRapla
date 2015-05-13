@@ -16,6 +16,7 @@ public class Render extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        
         JLabel c = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         ModeloTablaHorarios model = (ModeloTablaHorarios) table.getModel();
         
@@ -23,7 +24,8 @@ public class Render extends DefaultTableCellRenderer {
         {
             c.setBackground(Color.GREEN);
             c.setToolTipText(model.getValueAt2(row, column).toString() + " Aulas");
-        } else if ((double)model.getValueAt2(row, column) >= 3 && (double)model.getValueAt2(row, column) <= 5) 
+        } 
+        else if ((double)model.getValueAt2(row, column) >= 3 && (double)model.getValueAt2(row, column) <= 4) 
         {
             c.setBackground(Color.YELLOW);
             c.setToolTipText(model.getValueAt2(row, column).toString() + " Aulas");

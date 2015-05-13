@@ -129,7 +129,7 @@ public class Conector {
 //                diaInicial++;
 //            }
             String fecha = fechaDesdeDate.toString();
-            while(fechaDesdeDate.before(fechaHastaDate))
+            while(fechaDesdeDate.before(fechaHastaDate) || fechaDesdeDate.equals(fechaHastaDate))
             {
 
                 resultado1 = ejecutarProcedimiento("consultar_total_horas_por_fecha_hora_inicio_fin('" + fecha + "', '08:00:00','23:00:00');");

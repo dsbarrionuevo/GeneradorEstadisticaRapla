@@ -174,12 +174,15 @@ public class EstadisticasRapla implements IEstadisticas {
     }
 
     @Override
-    public ArrayList<Horario> obtenerHorariosPorDia(java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate) {
+    public ArrayList<Horario> obtenerHorariosPorDia(java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate) 
+    {
         ArrayList<Horario> listaHorarios = new ArrayList<Horario>();
-        try {
+        try 
+        {
             conexion.conectar();
             String fecha = fechaDesdeDate.toString();
-            while (fechaDesdeDate.before(fechaHastaDate)) {
+            while (fechaDesdeDate.before(fechaHastaDate) || fechaDesdeDate.equals(fechaHastaDate)) 
+            {
                 Horario horario = new Horario();
                 ResultSet resultado = conexion.ejecutarProcedimiento("consultar_total_horas_por_fecha_hora_inicio_fin('" + fecha + "', '08:00:00','23:00:00');");
                 resultado.first();
@@ -199,11 +202,14 @@ public class EstadisticasRapla implements IEstadisticas {
                 listaHorarios.add(horario);
             }
 
-        } catch (SQLException ex) {
+        } catch (SQLException ex) 
+        {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ParseException ex) {
+        } catch (ParseException ex) 
+        {
             Logger.getLogger(Conector.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
+        } finally 
+        {
             conexion.cerrar();
         }
         return listaHorarios;

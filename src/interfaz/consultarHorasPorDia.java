@@ -38,6 +38,8 @@ public class consultarHorasPorDia extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaHorarios = new javax.swing.JTable();
+        fechaDesde = new javax.swing.JTextField();
+        fechaHasta = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,7 +69,11 @@ public class consultarHorasPorDia extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 536, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addComponent(fechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(fechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(36, 36, 36))
             .addGroup(layout.createSequentialGroup()
@@ -79,7 +85,10 @@ public class consultarHorasPorDia extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(fechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                 .addContainerGap())
@@ -91,7 +100,7 @@ public class consultarHorasPorDia extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         EstadisticasRapla estadisticas =  new EstadisticasRapla();
-        ArrayList<ArrayList<Horario>> lista = estadisticas.obtenerRangoHorariosFechas(Date.valueOf("2015-4-1"), Date.valueOf("2015-4-5"), 2);
+        ArrayList<ArrayList<Horario>> lista = estadisticas.obtenerRangoHorariosFechas(Date.valueOf(fechaDesde.getText()), Date.valueOf(fechaHasta.getText()), 2);
         ModeloTablaHorarios modelo = new ModeloTablaHorarios(lista);
         
         tablaHorarios.setModel(modelo);
@@ -134,6 +143,8 @@ public class consultarHorasPorDia extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField fechaDesde;
+    private javax.swing.JTextField fechaHasta;
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaHorarios;
