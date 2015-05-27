@@ -14,11 +14,11 @@ public class Main {
     private static Conector conector;
     
     public static void main(String[] args) {
-      //prueba ventana = new prueba();
-      //ventana.setVisible(true);
+      prueba ventana = new prueba();
+      ventana.setVisible(true);
         conector = new Conector();
         //conector.consultarCantidadCursosPorMateriaPorAnio(2015);
-        conector.consultarHorasPorDia("2015-4-1", "2015-4-1", Date.valueOf("2015-4-1"), Date.valueOf("2015-4-1"));
+        //conector.consultarHorasPorDia("2015-4-1", "2015-4-1", Date.valueOf("2015-4-1"), Date.valueOf("2015-4-1"));
         //conector.consultarHorarioMasUsadoPorDia("2015-4-5", 2);
         //conector.consultarSoftwareCursosAnual(2015, "software1", "software2");
         //conector.consultarCantidadAlumnosAnual(2015);

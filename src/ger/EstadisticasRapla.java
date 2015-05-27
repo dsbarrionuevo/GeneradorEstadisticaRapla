@@ -3,6 +3,7 @@ package ger;
 import com.sun.javafx.geom.Matrix3f;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -389,10 +390,9 @@ public class EstadisticasRapla implements IEstadisticas {
         ArrayList<ArrayList<Horario>> arraryArrayHorarios = new ArrayList<ArrayList<Horario>>();
         try 
         {
-                           String fecha = fechaDesdeDate.toString();
+            String fecha = fechaDesdeDate.toString();
             while (fechaDesdeDate.before(fechaHastaDate)) 
-            {
- 
+            { 
                 arraryArrayHorarios.add(obtenerHorariosMasUsadosPorDia(fecha, rango));
                 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -403,14 +403,69 @@ public class EstadisticasRapla implements IEstadisticas {
                 
                 //agrega un dia mas pero a la fecha que se usa en el while
                 fechaDesdeDate = agregarDiaDate(fechaDesdeDate, c);
-            }
-            
+            }            
         } 
         catch (Exception e) 
         {
         }
 
         return arraryArrayHorarios;
+    }
+
+    @Override
+    public Horario obtenerPromedioHorasUnSoloDiaAño(String dia, int anio) 
+    {
+        Horario horario = new Horario();
+        try {
+            conexion.conectar();
+            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_total_horas_por_dia_anio('" + dia + "'," + anio + ")");
+            while (resultado.next()) {     
+            horario.setFecha(dia);
+            horario.setCantidadDiasFecha(resultado.getInt("cantidadDias"));
+            //horario.setCantidadHoras(resultado.getDouble("horasTotalesDia"));
+            String h = resultado.getString("horasTotalesDia");
+            }
+ 
+
+        } 
+        catch (Exception e) {
+        }
+        return horario;
+    }
+    
+    @Override
+    public String obtenerHorasTotalesPorDia(String dia, Periodo periodo)
+    {
+        String horas = "";
+        try {
+            conexion.conectar();
+            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_total_horas_por_dia('" + dia + "', YEAR("+ periodo.getComienzoPeriodo() +"), MONTH("+ periodo.getComienzoPeriodo() + "), MONTH(" + periodo.getFinPeriodo() + "))");
+            while (resultado.next()) {
+                horas = resultado.getString("horas_lunes");
+            }
+        } 
+        catch (Exception e) {
+        }
+        return horas;
+    }
+
+    @Override
+    public ArrayList<Periodo> obtenerPeriodos() {
+        ArrayList<Periodo> listaPeriodos = new ArrayList<>();
+        try {
+            conexion.conectar();
+            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_periodos()");
+            while (resultado.next()) {
+                Periodo periodo = new Periodo();
+                periodo.setIdPeriodo(resultado.getInt("ID"));
+                periodo.setNombre(resultado.getString("NAME"));
+                periodo.setComienzoPeriodo(resultado.getDate("PERIOD_START"));
+                periodo.setFinPeriodo(resultado.getDate("PERIOD_END"));
+                listaPeriodos.add(periodo);
+            }
+        } catch (Exception e) {
+        }
+        return listaPeriodos;
     }
 
 }

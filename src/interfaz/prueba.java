@@ -30,6 +30,7 @@ public class prueba extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         btnConsultarPromedioHorasDia = new javax.swing.JButton();
+        btnHorasTotales = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,6 +48,13 @@ public class prueba extends javax.swing.JFrame {
             }
         });
 
+        btnHorasTotales.setText("Consultar Horas Totales");
+        btnHorasTotales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHorasTotalesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -55,14 +63,19 @@ public class prueba extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnConsultarPromedioHorasDia)
-                    .addComponent(jButton1))
-                .addContainerGap(511, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(161, 161, 161)
+                        .addComponent(btnHorasTotales)))
+                .addContainerGap(231, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(btnHorasTotales))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnConsultarPromedioHorasDia)
                 .addContainerGap(341, Short.MAX_VALUE))
@@ -80,6 +93,11 @@ public class prueba extends javax.swing.JFrame {
         consultarPromedioHorasDia ventana = new consultarPromedioHorasDia();
         ventana.setVisible(true);
     }//GEN-LAST:event_btnConsultarPromedioHorasDiaActionPerformed
+
+    private void btnHorasTotalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHorasTotalesActionPerformed
+        ConsultarHorasTotales ventana = new ConsultarHorasTotales();
+        ventana.setVisible(true);
+    }//GEN-LAST:event_btnHorasTotalesActionPerformed
 
     /**
      * @param args the command line arguments
@@ -118,6 +136,7 @@ public class prueba extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultarPromedioHorasDia;
+    private javax.swing.JButton btnHorasTotales;
     private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
 }

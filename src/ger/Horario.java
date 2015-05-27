@@ -21,6 +21,16 @@ public class Horario
     private int dia;
     //fecha a la que pertenece ese horario. Para tener una referencia de a que dia se refiere
     private String fecha;
+    private int cantidadDiasFecha; //Cantidad de dias que se utiliza en obtenerPromedioHorasUnSoloDiaAño()
+    
+
+    public int getCantidadDiasFecha() {
+        return cantidadDiasFecha;
+    }
+
+    public void setCantidadDiasFecha(int cantidadDiasFecha) {
+        this.cantidadDiasFecha = cantidadDiasFecha;
+    }
 
     /**
      * @return the horaInicio
