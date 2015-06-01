@@ -7,7 +7,9 @@
 package interfaz;
 
 import ger.EstadisticasRapla;
+import ger.HorasTotales;
 import ger.Periodo;
+import java.util.ArrayList;
 
 /**
  *
@@ -96,7 +98,7 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
         Periodo periodoSeleccionado = (Periodo)cmbPeriodos.getSelectedItem();
         String claveDiaSeleccionado = ((ComboItem)cmbDias.getSelectedItem()).getKey();
-        ObtenerDatos(periodoSeleccionado);
+        ObtenerDatos(periodoSeleccionado, claveDiaSeleccionado);
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     /**
@@ -161,8 +163,14 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
         }
     }
 
-    private void ObtenerDatos(Periodo periodo) {
-        while () {            
+    private void ObtenerDatos(Periodo periodo, String diaSeleccionado) {
+        if (diaSeleccionado != "TODOS") {
+            EstadisticasRapla estadisticas = new EstadisticasRapla();
+            ArrayList<HorasTotales> listaHorasTotales = estadisticas.obtenerHorasTotalesPorDia(diaSeleccionado, periodo);
+            long promedio = listaHorasTotales.get(0).getHorasTotales().getTime() / listaHorasTotales.get(0).getCantidadDias();
+        }
+        else
+        {
             
         }
     }

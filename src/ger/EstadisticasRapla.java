@@ -434,14 +434,17 @@ public class EstadisticasRapla implements IEstadisticas {
     }
     
     @Override
-    public String obtenerHorasTotalesPorDia(String dia, Periodo periodo)
+    public ArrayList<HorasTotales> obtenerHorasTotalesPorDia(String dia, Periodo periodo)
     {
-        String horas = "";
+        ArrayList<HorasTotales> horas = new ArrayList<>();
         try {
             conexion.conectar();
             ResultSet resultado = conexion.ejecutarProcedimiento("consultar_total_horas_por_dia('" + dia + "', YEAR("+ periodo.getComienzoPeriodo() +"), MONTH("+ periodo.getComienzoPeriodo() + "), MONTH(" + periodo.getFinPeriodo() + "))");
             while (resultado.next()) {
-                horas = resultado.getString("horas_lunes");
+                HorasTotales horasTotalesDia = new HorasTotales();
+                horasTotalesDia.setHorasTotales(resultado.getTime("horasTotalesDia")); 
+                horasTotalesDia.setCantidadDias(resultado.getInt("cantidadDias")); 
+                horas.add(horasTotalesDia);
             }
         } 
         catch (Exception e) {

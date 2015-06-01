@@ -5,7 +5,8 @@
  */
 package ger;
 
-import java.sql.Date;
+import java.util.Date;
+
 
 /**
  *

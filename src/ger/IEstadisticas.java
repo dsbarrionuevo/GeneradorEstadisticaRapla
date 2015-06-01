@@ -40,7 +40,7 @@ public interface IEstadisticas {
     public ArrayList<Periodo> obtenerPeriodos();
     
     //Obtiene las horas totales de un dia en especifico en el cual es utilizado el laboratorio. Solo Devuelve String de horasTotales
-    public String obtenerHorasTotalesPorDia(String dia, Periodo periodo);
+    public ArrayList<HorasTotales> obtenerHorasTotalesPorDia(String dia, Periodo periodo);
     
     public ArrayList<ArrayList<Horario>> obtenerRangoHorariosFechas(java.util.Date fechaDesdeDate, java.util.Date fechaHastaDate, int rango);
 }
