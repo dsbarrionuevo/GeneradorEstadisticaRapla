@@ -1,9 +1,7 @@
 package ger;
 
-import com.sun.javafx.geom.Matrix3f;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,10 +9,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *
@@ -439,17 +436,35 @@ public class EstadisticasRapla implements IEstadisticas {
         ArrayList<HorasTotales> horas = new ArrayList<>();
         try {
             conexion.conectar();
-            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_total_horas_por_dia('" + dia + "', YEAR("+ periodo.getComienzoPeriodo() +"), MONTH("+ periodo.getComienzoPeriodo() + "), MONTH(" + periodo.getFinPeriodo() + "))");
+            String inicioPeriodo = ConvertirFechaMySQL(periodo.getComienzoPeriodo());
+            String finPeriodo = ConvertirFechaMySQL(periodo.getFinPeriodo());
+
+            ResultSet resultado = conexion.ejecutarProcedimiento("consultar_total_horas_por_dia('" + dia + "', YEAR('"+ inicioPeriodo +"'), MONTH('"+ inicioPeriodo + "'), MONTH('" + finPeriodo + "'))");
             while (resultado.next()) {
                 HorasTotales horasTotalesDia = new HorasTotales();
-                horasTotalesDia.setHorasTotales(resultado.getTime("horasTotalesDia")); 
+                
                 horasTotalesDia.setCantidadDias(resultado.getInt("cantidadDias")); 
+                horasTotalesDia.setHorasTotales(resultado.getLong("horasTotalesDia")); 
+                
+                int day = (int)TimeUnit.SECONDS.toDays(horasTotalesDia.getHorasTotales());    
+                long hours = TimeUnit.SECONDS.toHours(horasTotalesDia.getHorasTotales());
+                long minute = TimeUnit.SECONDS.toMinutes(horasTotalesDia.getHorasTotales()) - (TimeUnit.SECONDS.toHours(horasTotalesDia.getHorasTotales())* 60);
+                long second = TimeUnit.SECONDS.toSeconds(horasTotalesDia.getHorasTotales()) - (TimeUnit.SECONDS.toMinutes(horasTotalesDia.getHorasTotales()) *60);
+                
+                
                 horas.add(horasTotalesDia);
             }
         } 
         catch (Exception e) {
         }
         return horas;
+    }
+
+    private String ConvertirFechaMySQL(Date fecha) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(sdf.parse(fecha.toString()));
+        return sdf.format(c.getTime());
     }
 
     @Override

@@ -9,7 +9,16 @@ package interfaz;
 import ger.EstadisticasRapla;
 import ger.HorasTotales;
 import ger.Periodo;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -43,6 +52,7 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
         lblDias = new javax.swing.JLabel();
         lblPeriodo = new javax.swing.JLabel();
         btnAceptar = new javax.swing.JButton();
+        panelGrafico = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -57,6 +67,17 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout panelGraficoLayout = new javax.swing.GroupLayout(panelGrafico);
+        panelGrafico.setLayout(panelGraficoLayout);
+        panelGraficoLayout.setHorizontalGroup(
+            panelGraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        panelGraficoLayout.setVerticalGroup(
+            panelGraficoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 373, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -64,18 +85,23 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbDias, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblDias))
-                .addGap(62, 62, 62)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblPeriodo)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(panelGrafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(cmbPeriodos, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
-                        .addComponent(btnAceptar)
-                        .addGap(36, 36, 36))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbDias, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDias))
+                        .addGap(62, 62, 62)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblPeriodo)
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cmbPeriodos, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                                .addComponent(btnAceptar)
+                                .addGap(36, 36, 36))))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -89,7 +115,9 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
                     .addComponent(cmbDias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmbPeriodos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAceptar))
-                .addContainerGap(390, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelGrafico, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -142,6 +170,7 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
     private javax.swing.JComboBox cmbPeriodos;
     private javax.swing.JLabel lblDias;
     private javax.swing.JLabel lblPeriodo;
+    private javax.swing.JPanel panelGrafico;
     // End of variables declaration//GEN-END:variables
 
     private void CargarComboDias() 
@@ -164,14 +193,31 @@ public class ConsultarHorasTotales extends javax.swing.JFrame {
     }
 
     private void ObtenerDatos(Periodo periodo, String diaSeleccionado) {
-        if (diaSeleccionado != "TODOS") {
+            if (diaSeleccionado != "TODOS") {
             EstadisticasRapla estadisticas = new EstadisticasRapla();
             ArrayList<HorasTotales> listaHorasTotales = estadisticas.obtenerHorasTotalesPorDia(diaSeleccionado, periodo);
-            long promedio = listaHorasTotales.get(0).getHorasTotales().getTime() / listaHorasTotales.get(0).getCantidadDias();
+            long promedio = listaHorasTotales.get(0).getHorasTotales() / listaHorasTotales.get(0).getCantidadDias();
+            
+            long hours = TimeUnit.SECONDS.toHours(listaHorasTotales.get(0).getHorasTotales());
+            long minute = TimeUnit.SECONDS.toMinutes(listaHorasTotales.get(0).getHorasTotales()) - (TimeUnit.SECONDS.toHours(listaHorasTotales.get(0).getHorasTotales())* 60);
+            long second = TimeUnit.SECONDS.toSeconds(listaHorasTotales.get(0).getHorasTotales()) - (TimeUnit.SECONDS.toMinutes(listaHorasTotales.get(0).getHorasTotales()) *60);
+            
+            String horasPromedio = Objects.toString(hours, null) + ':' + Objects.toString(minute, null) + ':' + Objects.toString(second, null);
+            
+            DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+            dataset.addValue(promedio, "Serie", diaSeleccionado);
+            
+            JFreeChart chartpanel = ChartFactory.createBarChart("titulo", "ALGO", "NOSE", dataset, PlotOrientation.VERTICAL, true, true, false);
+            
+            ChartFrame frame = new ChartFrame("TOTULOSADAS", chartpanel);
+            frame.pack();
+            frame.setVisible(true);
         }
         else
         {
             
         }
+        
+
     }
 }

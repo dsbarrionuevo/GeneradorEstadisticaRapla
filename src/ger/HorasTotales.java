@@ -7,19 +7,20 @@
 package ger;
 
 import java.sql.Time;
+import java.util.Date;
 
 /**
  *
  * @author MatiasNB
  */
 public class HorasTotales {
-    private Time horasTotales;
+    private long horasTotales;
 
-    public Time getHorasTotales() {
+    public long getHorasTotales() {
         return horasTotales;
     }
 
-    public void setHorasTotales(Time horasTotales) {
+    public void setHorasTotales(long horasTotales) {
         this.horasTotales = horasTotales;
     }
 
